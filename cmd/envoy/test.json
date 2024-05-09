@@ -1,0 +1,30 @@
+{
+  "node": {
+    "id": "{{ .nodeID }}",
+    "cluster": "{{ .cluster }}",
+    "locality": {
+      {{ if .region }}
+      "region": "{{ .region }}",
+      {{ end }}
+      {{ if .zone }}
+      "zone": "{{ .zone }}",
+      {{ end }}
+      {{ if .sub_zone }}
+      "sub_zone": "{{ .sub_zone }}",
+      {{ end }}
+    },
+    "metadata": {{ .meta_json_str }}
+  },
+
+  "admin": {
+    "access_log_path": "/dev/null",
+    "address": {
+      "socket_address": {
+        "address": "{{ .localhost }}",
+        "port_value": {{ .config.ProxyAdminPort }}
+      }
+    }
+  },
+
+
+}

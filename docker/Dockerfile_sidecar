@@ -1,0 +1,4 @@
+FROM alpine
+
+ADD ./bin/sidecar-operator /usr/local/bin/
+ENTRYPOINT ["sidecar-operator"]

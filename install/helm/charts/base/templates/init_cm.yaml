@@ -1,0 +1,19 @@
+{{- if .Values.global.initConfigMap }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.injectConfigName }}
+  namespace: {{ template "sidecar-operator.ns" .}}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.appConfigName }}
+  namespace: {{ template "sidecar-operator.ns" . }}
+
+---
+
+{{- end }}

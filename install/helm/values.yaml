@@ -1,0 +1,38 @@
+# Top level istio values file has the following sections.
+#
+# global: This file is the authoritative and exhaustive source for the global section.
+#
+# chart sections: Every subdirectory inside the charts/ directory has a top level
+#       configuration key in this file. This file overrides the values specified
+#       by the charts/${chartname}/values.yaml.
+#       Check the chart level values file for exhaustive list of configuration options.
+
+#
+# istio sidecar injector
+#
+
+istio:
+  enabled: false
+
+
+global:
+
+  initConfigMap: true
+
+  nsOverride: sidecar-system
+
+  appName: sidecar-operator
+
+  hub: docker.io/caasguru
+
+  # Default tag for sidecar images.
+  tag: 1.2.5
+
+  #imagePullPolicy: IfNotPresent
+  imagePullPolicy: Always
+
+
+  # enable pod distruption budget for the control plane, which is used to
+  # ensure Istio control plane components are gradually upgraded or recovered.
+  defaultPodDisruptionBudget:
+    enabled: true

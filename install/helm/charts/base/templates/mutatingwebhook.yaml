@@ -1,0 +1,24 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ .Values.webhookConfig }}
+  labels:
+    app: sidecar-operator
+webhooks:
+  - name: {{ .Values.webhookName }}
+    clientConfig:
+      service:
+        name: {{ .Values.sidecarWebhookService }}
+        namespace: {{ template "sidecar-operator.ns" . }}
+        path: "/inject"
+      caBundle: ""
+#      caBundle: ${CA_BUNDLE}
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+#    failurePolicy: Fail
+    namespaceSelector:
+      matchLabels:
+        {{ .Values.injectionName}}: enabled

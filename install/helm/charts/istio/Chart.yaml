@@ -1,0 +1,10 @@
+apiVersion: v1
+name: istio
+version: 1.2.5
+appVersion: 1.2.5
+description: Helm chart for istio sidecar injector
+keywords:
+  - istio
+sources:
+  - http://github.com/jingnanzhou/sidecar-operator
+engine: gotpl

@@ -1,0 +1,75 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sidecar-operator-deployment
+  namespace: {{ template "sidecar-operator.ns" . }}
+  labels:
+    app: {{ .Values.global.appName}}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.appName }}
+    spec:
+      serviceAccountName: sidecar-service-account
+      containers:
+        - name: sidecar-injector
+
+{{- if contains "/" .Values.sidecarOpImage }}
+          image: "{{ .Values.sidecarOpImage }}"
+{{- else }}
+          image: "{{ .Values.global.hub }}/{{ .Values.sidecarOpImage }}:{{ .Values.global.tag }}"
+{{- end }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+
+          args:
+            - inject
+            - --injectConfig=/etc/sidecar/inject/{{ .Values.injectConfigFile }}
+            - --injectValues=/etc/sidecar/inject/{{ .Values.injectValuesFile}}
+            - --tlsCertFile=/etc/sidecar/certs/cert-chain.pem
+            - --tlsKeyFile=/etc/sidecar/certs/key.pem
+            - --appConfig=/etc/sidecar/app/{{ .Values.appconfigFile}}
+            - --webhookConfigName={{ .Values.webhookConfig }}
+            - --webhookName={{ .Values.webhookName }}
+
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/sidecar/certs/
+              readOnly: true
+            - name: config-inject
+              mountPath: /etc/sidecar/inject
+            - name: config-app
+              mountPath: /etc/sidecar/app
+
+          livenessProbe:
+            exec:
+              command:
+                - /usr/local/bin/sidecar-operator
+                - probe
+                - --probe-path=/health
+                - --interval=4s
+            initialDelaySeconds: 4
+            periodSeconds: 4
+          readinessProbe:
+            exec:
+              command:
+                - /usr/local/bin/sidecar-operator
+                - probe
+                - --probe-path=/health
+                - --interval=4s
+            initialDelaySeconds: 4
+            periodSeconds: 4
+
+
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: sidecar-injector-webhook-certs
+        - name: config-inject
+          configMap:
+            name: {{ .Values.injectConfigName }}
+#            name: sidecar-injector-webhook-configmap
+        - name: config-app
+          configMap:
+            name: {{ .Values.appConfigName }}

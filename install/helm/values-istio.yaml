@@ -1,0 +1,29 @@
+# Top level istio values file has the following sections.
+#
+# global: This file is the authoritative and exhaustive source for the global section.
+#
+# chart sections: Every subdirectory inside the charts/ directory has a top level
+#       configuration key in this file. This file overrides the values specified
+#       by the charts/${chartname}/values.yaml.
+#       Check the chart level values file for exhaustive list of configuration options.
+
+#
+# istio sidecar injector
+#
+
+global:
+  nsOverride: istio-system
+# do not initiate config map. Istio will provide configmap
+  initConfigMap: false
+
+# over write base for istio configMap
+base:
+  injectConfigName: istio-sidecar-injector
+  appConfigName: istio
+
+  injectConfigFile: config
+  injectValuesFile: values
+  appconfigFile: mesh
+
+# use the same name as istio
+  injectionName: istio-injection

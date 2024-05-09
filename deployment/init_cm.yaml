@@ -1,0 +1,19 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sidecar-injectcconfig
+  namespace: sidecar-system
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: sidecar-appconfig
+  namespace: sidecar-system
+
+
+---
+

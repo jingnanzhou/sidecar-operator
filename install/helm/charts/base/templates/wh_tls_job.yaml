@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{ template "sidecar-operator.ns" . }}
+  name: webhook-tls-job
+spec:
+  template:
+    spec:
+      serviceAccountName: sidecar-service-account
+      containers:
+      - name: secret
+
+{{- if contains "/" .Values.secretImage }}
+        image: "{{ .Values.secretImage }}"
+{{- else }}
+        image: "{{ .Values.global.hub }}/{{ .Values.secretImage }}:{{ .Values.global.tag }}"
+{{- end }}
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+
+        command: ["secret.sh",  "--namespace", "{{ template "sidecar-operator.ns" . }}",   "--service", "{{ .Values.sidecarWebhookService }}"   ]
+#        args:
+#          - "--namespace"
+#          - "default"
+      restartPolicy: OnFailure

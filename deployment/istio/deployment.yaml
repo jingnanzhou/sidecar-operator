@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sidecar-injector-webhook-deployment
+  labels:
+    app: sidecar-injector
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sidecar-injector
+    spec:
+      serviceAccountName: sidecar-service-account
+      containers:
+        - name: sidecar-injector
+          image: caasguru/sidecar-operator
+          imagePullPolicy: Always
+          args:
+            - inject
+            - --injectConfig=/etc/sidecar/inject/config
+            - --injectValues=/etc/sidecar/inject/values
+            - --tlsCertFile=/etc/sidecar/certs/cert-chain.pem
+            - --tlsKeyFile=/etc/sidecar/certs/key.pem
+            - --appConfig=/etc/sidecar/app/mesh
+
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/sidecar/certs/
+              readOnly: true
+            - name: config-inject
+              mountPath: /etc/sidecar/inject
+            - name: config-app
+              mountPath: /etc/sidecar/app
+
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: sidecar-injector-webhook-certs
+        - name: config-inject
+          configMap:
+            name: istio-sidecar-injector
+#            name: sidecar-injector-webhook-configmap
+        - name: config-app
+          configMap:
+            name: istio

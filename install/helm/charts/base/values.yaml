@@ -1,0 +1,21 @@
+#
+# sidecar operator configuration
+#
+
+secretImage: caasguru/secret
+
+sidecarOpImage: caasguru/sidecar-operator
+
+injectionName: sidecar-injection
+
+webhookName: sidecar-injector.jingnan.io
+webhookConfig: sidecar-webhook-config
+
+injectConfigName: sidecar-injectconfig
+appConfigName: sidecar-appconfig
+
+sidecarWebhookService: sidecar-webhook-svc
+
+injectConfigFile: config
+injectValuesFile: values
+appconfigFile: mesh

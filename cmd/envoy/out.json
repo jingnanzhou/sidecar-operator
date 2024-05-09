@@ -1,0 +1,24 @@
+{
+  "node": {
+    "id": "testNode",
+    "cluster": "testclusterID",
+    "locality": {
+      
+      
+      
+    },
+    "metadata": json
+  },
+
+  "admin": {
+    "access_log_path": "/dev/null",
+    "address": {
+      "socket_address": {
+        "address": "<no value>",
+        "port_value": <no value>
+      }
+    }
+  },
+
+
+}
